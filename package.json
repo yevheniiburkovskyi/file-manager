@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/EugeneBurkovskiy/file-manager/issues"
   },
-  "homepage": "https://github.com/EugeneBurkovskiy/file-manager#readme"
+  "homepage": "https://github.com/EugeneBurkovskiy/file-manager#readme",
+  "devDependencies": {
+    "eslint": "^8.41.0"
+  }
 }
