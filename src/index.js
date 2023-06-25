@@ -7,13 +7,15 @@ import getDirectoryInfo from './navigation/getDirectoryInfo.js';
 import getOsInfo from './os/getOsInfo.js';
 import getHash from './hash/getHash.js';
 import { commands } from './data/commands.js';
+import compressFile from './zip/compressFile.js';
+import decompressFile from './zip/decompressFile.js';
 
 const username = getUsername();
 const systemPath = process.cwd();
 
 let currentDirectory = systemPath;
 
-const { navigaton, osCommands, hash } = commands;
+const { navigaton, osCommands, hash, compress, decompress } = commands;
 
 console.log(`Welcome to the File Manager, ${username}!\n`);
 console.log('You can see the availble commands below:\n');
@@ -46,6 +48,12 @@ const manageCommand = async (command, args) => {
       break;
     case hash:
       await getHash(currentDirectory, args);
+      break;
+    case compress:
+      await compressFile(currentDirectory, args);
+      break;
+    case decompress:
+      await decompressFile(currentDirectory, args);
       break;
     case '.exit':
       rl.close();
