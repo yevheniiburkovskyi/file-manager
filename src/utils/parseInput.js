@@ -1,4 +1,4 @@
-const getCommand = (input) => {
+const parseInput = (input) => {
   const clearInput = input.trim();
   const command = clearInput.split(' ')[0].trim();
   const args = clearInput
@@ -9,4 +9,4 @@ const getCommand = (input) => {
   return { command, args };
 };
 
-export default getCommand;
+export default parseInput;

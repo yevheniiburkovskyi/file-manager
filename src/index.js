@@ -1,15 +1,19 @@
 import readline from 'readline';
 import getUsername from './utils/getUsername.js';
-import getCommand from './utils/getCommand.js';
+import parseInput from './utils/parseInput.js';
 import getNewPath from './navigation/getNewPath.js';
 import getUpPath from './navigation/getUpPath.js';
 import getDirectoryInfo from './navigation/getDirectoryInfo.js';
 import getOsInfo from './os/getOsInfo.js';
+import getHash from './hash/getHash.js';
+import { commands } from './data/commands.js';
 
 const username = getUsername();
 const systemPath = process.cwd();
 
 let currentDirectory = systemPath;
+
+const { navigaton, osCommands, hash } = commands;
 
 console.log(`Welcome to the File Manager, ${username}!\n`);
 console.log('You can see the availble commands below:\n');
@@ -24,21 +28,24 @@ rl.prompt();
 
 const manageCommand = async (command, args) => {
   switch (command) {
-    case 'cd':
+    case navigaton.cd:
       try {
         currentDirectory = await getNewPath(args, currentDirectory);
       } catch {
-        console.log('There is no such file\n');
+        console.log('File not found');
       }
       break;
-    case 'up':
+    case navigaton.up:
       currentDirectory = getUpPath(currentDirectory, systemPath);
       break;
-    case 'ls':
+    case navigaton.ls:
       await getDirectoryInfo(currentDirectory);
       break;
-    case 'os':
+    case osCommands.name:
       getOsInfo(args);
+      break;
+    case hash:
+      await getHash(currentDirectory, args);
       break;
     case '.exit':
       rl.close();
@@ -50,7 +57,7 @@ const manageCommand = async (command, args) => {
 };
 
 rl.on('line', async (input) => {
-  const { command, args } = getCommand(input);
+  const { command, args } = parseInput(input);
   await manageCommand(command, args);
   rl.setPrompt(`You are currently in ${currentDirectory}\n`);
   rl.prompt();
