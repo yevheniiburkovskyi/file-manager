@@ -38,7 +38,7 @@ const manageCommand = async (command, args) => {
       await getDirectoryInfo(currentDirectory);
       break;
     case 'os':
-      getOsInfo(command, args);
+      getOsInfo(args);
       break;
     case '.exit':
       rl.close();
