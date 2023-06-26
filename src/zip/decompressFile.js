@@ -16,10 +16,21 @@ const decompressFile = async (rootPathname, args) => {
 
     const brotiDecompressStream = zlib.createBrotliDecompress();
 
+    inputStream.on('error', (error) => {
+      console.log(error);
+    });
+
+    outputStream.on('error', (error) => {
+      console.log(error);
+    });
+
+    brotiDecompressStream.on('error', (error) => {
+      console.log(error);
+    });
+
     inputStream.pipe(brotiDecompressStream).pipe(outputStream);
-  } catch {
-    console.log('Invalid file path');
-    return;
+  } catch (error) {
+    console.error(error);
   }
 };
 

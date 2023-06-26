@@ -7,17 +7,16 @@ const getHash = async (rootPath, args) => {
     console.log('Invalid file path');
     return;
   }
-
-  const arg = args[0];
-  const filePath = path.join(rootPath, arg);
   try {
+    const arg = args[0];
+    const filePath = path.join(rootPath, arg);
     const fileBuffer = await fsPromises.readFile(filePath);
     const hash = crypto.createHash('sha256');
     hash.update(fileBuffer);
     const resHashInHex = hash.digest('hex');
     console.log(resHashInHex);
-  } catch {
-    console.log('Invalid file path');
+  } catch (error) {
+    console.error(error);
   }
 };
 
