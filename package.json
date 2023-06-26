@@ -1,0 +1,27 @@
+{
+  "name": "file-manager",
+  "version": "1.0.0",
+  "description": "file manager with node js",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EugeneBurkovskiy/file-manager.git"
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "author": "Eugene Burkovskiy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EugeneBurkovskiy/file-manager/issues"
+  },
+  "homepage": "https://github.com/EugeneBurkovskiy/file-manager#readme",
+  "devDependencies": {
+    "eslint": "^8.41.0"
+  }
+}
