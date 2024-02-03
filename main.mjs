@@ -26,44 +26,43 @@ const startFileManager = () => {
 
     rl.on("line", async (input) => {
       const command = getCommandArg(input, 0);
+      try {
+        switch (command) {
+          case ".exit":
+            return rl.close();
 
-      switch (command) {
-        case ".exit":
-          return rl.close();
+          case "up":
+            if (currentPath !== userHomeDirectory) {
+              const parentPath = path.resolve(currentPath, "..");
+              currentPath = parentPath;
+            }
 
-        case "up":
-          if (currentPath !== userHomeDirectory) {
-            const parentPath = path.resolve(currentPath, "..");
-            currentPath = parentPath;
-          }
+            break;
 
-          break;
+          case "cd":
+            const targetPath = getCommandArg(input, 1);
 
-        case "cd":
-          const targetPath = getCommandArg(input, 1);
+            const createdPath = path.join(currentPath, targetPath);
 
-          const createdPath = path.join(currentPath, targetPath);
-
-          try {
             await fsp.access(createdPath);
 
             currentPath = createdPath;
-          } catch {
-            console.error("Operation failed");
-          }
 
-          break;
+            break;
 
-        case "ls":
-          showContentTable(currentPath);
+          case "ls":
+            showContentTable(currentPath);
 
-          break;
+            break;
 
-        default:
-          console.error("Invalid input");
+          default:
+            console.error("Invalid input");
+        }
+
+        console.log(`You are currently in ${currentPath}`);
+      } catch {
+        console.error("Operation failed");
       }
-
-      console.log(`You are currently in ${currentPath}`);
     });
 
     rl.on("close", () => {
