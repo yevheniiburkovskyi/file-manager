@@ -6,6 +6,7 @@ import { showContentTable } from "./src/showContentTable.js";
 import fsp from "fs/promises";
 import { readFile } from "./src/readFile.js";
 import { copyFile } from "./src/copyFile.js";
+import { calculateHash } from "./src/calculateHash.js";
 
 const startFileManager = () => {
   const args = process.argv.slice(2);
@@ -129,6 +130,19 @@ const startFileManager = () => {
             }
 
             await fsp.unlink(removeSourcePath);
+
+            break;
+
+          case "hash":
+            const hashFilePath = path.join(targetPath);
+
+            const hashFileStats = await fsp.stat(hashFilePath);
+
+            if (hashFileStats.isDirectory()) {
+              throw Error;
+            }
+
+            await calculateHash(hashFilePath);
 
             break;
 
