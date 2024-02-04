@@ -9,6 +9,7 @@ import { copyFile } from "./src/copyFile.js";
 import { calculateHash } from "./src/calculateHash.js";
 import { compressFile } from "./src/compressFile.js";
 import { decompressFile } from "./src/decompressFile.js";
+import { getOSInfo } from "./src/getOsInfo.js";
 
 const startFileManager = () => {
   const args = process.argv.slice(2);
@@ -148,6 +149,10 @@ const startFileManager = () => {
 
             await calculateHash(hashFilePath);
 
+            break;
+          case "os":
+            const osCommand = getCommandArg(input, 1);
+            getOSInfo(osCommand);
             break;
           case "compress":
             const compressSourcePath = path.join(targetPath);
