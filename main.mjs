@@ -7,6 +7,8 @@ import fsp from "fs/promises";
 import { readFile } from "./src/readFile.js";
 import { copyFile } from "./src/copyFile.js";
 import { calculateHash } from "./src/calculateHash.js";
+import { compressFile } from "./src/compressFile.js";
+import { decompressFile } from "./src/decompressFile.js";
 
 const startFileManager = () => {
   const args = process.argv.slice(2);
@@ -16,6 +18,8 @@ const startFileManager = () => {
   const userHomeDirectory = os.homedir();
 
   let currentPath = userHomeDirectory;
+
+  let compressedFileExtension = ".txt";
 
   if (usernameArg) {
     const username = usernameArg.split("=")[1];
@@ -145,6 +149,50 @@ const startFileManager = () => {
             await calculateHash(hashFilePath);
 
             break;
+          case "compress":
+            const compressSourcePath = path.join(targetPath);
+
+            compressedFileExtension = path.extname(compressSourcePath);
+
+            const compressDestinationPath = path.join(
+              getCommandArg(input, 2),
+              `${path.basename(compressSourcePath, compressedFileExtension)}.br`
+            );
+
+            const compressFileStats = await fsp.stat(compressSourcePath);
+
+            if (compressFileStats.isDirectory()) {
+              throw Error;
+            }
+
+            await compressFile(compressSourcePath, compressDestinationPath);
+
+            break;
+
+          case "decompress": {
+            const decompressSourcePath = path.join(targetPath);
+
+            const decompressDestinationPath = path.join(
+              getCommandArg(input, 2),
+              `${path.basename(
+                decompressSourcePath,
+                path.extname(decompressSourcePath)
+              )}${compressedFileExtension}`
+            );
+
+            const decompressFileStats = await fsp.stat(decompressSourcePath);
+
+            if (decompressFileStats.isDirectory()) {
+              throw Error;
+            }
+
+            await decompressFile(
+              decompressSourcePath,
+              decompressDestinationPath
+            );
+
+            break;
+          }
 
           default:
             console.error("Invalid input");
