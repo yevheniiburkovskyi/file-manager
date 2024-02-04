@@ -185,7 +185,6 @@ const startFileManager = () => {
             console.error("Invalid input");
         }
       } catch (error) {
-        console.error(error);
         console.error("Operation failed");
       }
 
