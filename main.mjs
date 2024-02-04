@@ -10,6 +10,8 @@ import { calculateHash } from "./src/calculateHash.js";
 import { compressFile } from "./src/compressFile.js";
 import { decompressFile } from "./src/decompressFile.js";
 import { getOSInfo } from "./src/getOsInfo.js";
+import { COMMANDS } from "./src/constants/constants.js";
+import { validateFilePath } from "./src/utils/validateFilePath.js";
 
 const startFileManager = () => {
   const args = process.argv.slice(2);
@@ -37,10 +39,10 @@ const startFileManager = () => {
       const targetPath = getCommandArg(input, 1);
       try {
         switch (command) {
-          case ".exit":
+          case COMMANDS.exit:
             return rl.close();
 
-          case "up":
+          case COMMANDS.up:
             if (currentPath !== userHomeDirectory) {
               const parentPath = path.resolve(currentPath, "..");
               currentPath = parentPath;
@@ -48,7 +50,7 @@ const startFileManager = () => {
 
             break;
 
-          case "cd":
+          case COMMANDS.cd:
             const createdPath = path.join(currentPath, targetPath);
 
             await fsp.access(createdPath);
@@ -57,12 +59,12 @@ const startFileManager = () => {
 
             break;
 
-          case "ls":
+          case COMMANDS.ls:
             showContentTable(currentPath);
 
             break;
 
-          case "cat":
+          case COMMANDS.cat:
             const readTargetPath = path.join(targetPath);
 
             await fsp.access(readTargetPath);
@@ -70,14 +72,14 @@ const startFileManager = () => {
             await readFile(readTargetPath);
 
             break;
-          case "add":
+          case COMMANDS.add:
             const addTargetPath = path.join(currentPath, targetPath);
 
             await fsp.writeFile(addTargetPath, "");
 
             break;
 
-          case "rn":
+          case COMMANDS.rn:
             const oldNamePath = path.join(targetPath);
 
             const updatedNamePath = path.join(
@@ -89,7 +91,7 @@ const startFileManager = () => {
 
             break;
 
-          case "cp": {
+          case COMMANDS.cp: {
             const copySourcePath = path.join(targetPath);
 
             const copyDestinationPath = path.join(
@@ -97,17 +99,13 @@ const startFileManager = () => {
               path.basename(copySourcePath)
             );
 
-            const fileStats = await fsp.stat(copySourcePath);
-
-            if (fileStats.isDirectory()) {
-              throw Error;
-            }
+            await validateFilePath(copySourcePath);
 
             await copyFile(copySourcePath, copyDestinationPath);
 
             break;
           }
-          case "mv":
+          case COMMANDS.mv:
             const moveSourcePath = path.join(targetPath);
 
             const moveDestinationPath = path.join(
@@ -115,46 +113,36 @@ const startFileManager = () => {
               path.basename(moveSourcePath)
             );
 
-            const fileStats = await fsp.stat(moveSourcePath);
-
-            if (fileStats.isDirectory()) {
-              throw Error;
-            }
+            await validateFilePath(moveSourcePath);
 
             await copyFile(moveSourcePath, moveDestinationPath, true);
 
             break;
 
-          case "rm":
+          case COMMANDS.rm:
             const removeSourcePath = path.join(targetPath);
 
-            const removeFileStats = await fsp.stat(removeSourcePath);
-
-            if (removeFileStats.isDirectory()) {
-              throw Error;
-            }
+            await validateFilePath(targetPath);
 
             await fsp.unlink(removeSourcePath);
 
             break;
 
-          case "hash":
+          case COMMANDS.hash:
             const hashFilePath = path.join(targetPath);
 
-            const hashFileStats = await fsp.stat(hashFilePath);
-
-            if (hashFileStats.isDirectory()) {
-              throw Error;
-            }
+            await validateFilePath(hashFilePath);
 
             await calculateHash(hashFilePath);
 
             break;
-          case "os":
+
+          case COMMANDS.os:
             const osCommand = getCommandArg(input, 1);
             getOSInfo(osCommand);
             break;
-          case "compress":
+
+          case COMMANDS.compress:
             const compressSourcePath = path.join(targetPath);
 
             compressedFileExtension = path.extname(compressSourcePath);
@@ -164,17 +152,13 @@ const startFileManager = () => {
               `${path.basename(compressSourcePath, compressedFileExtension)}.br`
             );
 
-            const compressFileStats = await fsp.stat(compressSourcePath);
-
-            if (compressFileStats.isDirectory()) {
-              throw Error;
-            }
+            await validateFilePath(compressSourcePath);
 
             await compressFile(compressSourcePath, compressDestinationPath);
 
             break;
 
-          case "decompress": {
+          case COMMANDS.decompress: {
             const decompressSourcePath = path.join(targetPath);
 
             const decompressDestinationPath = path.join(
@@ -185,11 +169,7 @@ const startFileManager = () => {
               )}${compressedFileExtension}`
             );
 
-            const decompressFileStats = await fsp.stat(decompressSourcePath);
-
-            if (decompressFileStats.isDirectory()) {
-              throw Error;
-            }
+            await validateFilePath(decompressSourcePath);
 
             await decompressFile(
               decompressSourcePath,
@@ -203,7 +183,6 @@ const startFileManager = () => {
             console.error("Invalid input");
         }
       } catch (error) {
-        console.error(error);
         console.error("Operation failed");
       }
 
