@@ -14,3 +14,11 @@ export const COMMANDS = {
   decompress: "decompress",
   exit: ".exit",
 };
+
+export const OS_COMMANDS = {
+  eol: "--EOL",
+  cpus: "--cpus",
+  homedir: "--homedir",
+  username: "--username",
+  architecture: "--architecture",
+};

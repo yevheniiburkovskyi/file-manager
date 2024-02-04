@@ -1,9 +1,9 @@
 import fsp from "fs/promises";
 
 export const validateFilePath = async (filePath) => {
-  const decompressFileStats = await fsp.stat(decompressSourcePath);
+  const fileStats = await fsp.stat(filePath);
 
-  if (decompressFileStats.isDirectory()) {
+  if (fileStats.isDirectory()) {
     throw Error;
   }
 };

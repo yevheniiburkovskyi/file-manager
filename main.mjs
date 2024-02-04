@@ -72,6 +72,7 @@ const startFileManager = () => {
             await readFile(readTargetPath);
 
             break;
+
           case COMMANDS.add:
             const addTargetPath = path.join(currentPath, targetPath);
 
@@ -140,6 +141,7 @@ const startFileManager = () => {
           case COMMANDS.os:
             const osCommand = getCommandArg(input, 1);
             getOSInfo(osCommand);
+
             break;
 
           case COMMANDS.compress:
@@ -183,6 +185,7 @@ const startFileManager = () => {
             console.error("Invalid input");
         }
       } catch (error) {
+        console.error(error);
         console.error("Operation failed");
       }
 
